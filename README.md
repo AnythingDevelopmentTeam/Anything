@@ -44,6 +44,6 @@
 ### Вариант 2: Сборка из исходников
 
 ```bash
-git clone https://github.com/yourname/anything.git
+git clone https://github.com/RandomSoftMakers/anything.git
 cd anything/src/Anything.UI.Wpf
 dotnet build
