@@ -23,7 +23,6 @@
 
 ---
 # 📊 Сравнение Anything vs Everything vs fsearch vs ripgrep
-### (Anything работает **без индекса**)
 
 | Характеристика | **Anything** | **Everything** | **fsearch** | **ripgrep** |
 |----------------|--------------|----------------|-------------|-------------|
