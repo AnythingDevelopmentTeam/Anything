@@ -4,89 +4,104 @@
         Title="Anything"
         Height="500"
         Width="900"
-        Background="{DynamicResource WindowBackground}">
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="#1A1A1A">
 
     <Window.Resources>
 
-        <!-- Fluent SearchBox -->
-        <Style x:Key="FluentSearchBox" TargetType="TextBox">
-            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-            <Setter Property="Background" Value="{DynamicResource SearchBoxBackgroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource SearchBoxBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Grid>
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6"/>
-
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="6,0,0,0"/>
-
-                            <TextBlock Text="Search..."
-                                       Foreground="#66FFFFFF"
-                                       Margin="10,0,0,0"
-                                       VerticalAlignment="Center"
-                                       IsHitTestVisible="False"
-                                       Visibility="{Binding Text.IsEmpty,
-                                           RelativeSource={RelativeSource TemplatedParent},
-                                           Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        </Grid>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#66FFFFFF"/>
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#99FFFFFF"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <!-- Цвета -->
+        <SolidColorBrush x:Key="TitleBarBackground" Color="#202020"/>
+        <SolidColorBrush x:Key="TitleButtonHover" Color="#333333"/>
+        <SolidColorBrush x:Key="TitleButtonCloseHover" Color="#C42B1C"/>
 
     </Window.Resources>
 
-    <DockPanel>
+<DockPanel>
 
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Help">
-                <MenuItem Header="About" Click="OpenAbout_Click"/>
-            </MenuItem>
-        </Menu>
+    <!-- Кастомный заголовок -->
+    <Border DockPanel.Dock="Top"
+            Background="{StaticResource TitleBarBackground}"
+            Height="32"
+            MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
 
-        <TextBox DockPanel.Dock="Top"
-                 Margin="12"
-                 Style="{StaticResource FluentSearchBox}"
-                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <ListView Margin="12"
-                  ItemsSource="{Binding Results}"
-                  MouseDoubleClick="ListView_DoubleClick"
-                  Background="Transparent"
-                  Foreground="{DynamicResource TextBrush}">
+            <TextBlock Text="Anything"
+                       VerticalAlignment="Center"
+                       Margin="12,0,0,0"
+                       Foreground="White"
+                       FontSize="14"/>
 
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name"
-                                    Width="250"
-                                    DisplayMemberBinding="{Binding Name}" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Border Width="46" Height="32"
+                        Background="Transparent"
+                        MouseEnter="Minimize_Hover"
+                        MouseLeave="TitleButton_Leave"
+                        MouseLeftButtonUp="Minimize_Click">
+                    <TextBlock Text="—"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               FontSize="16"/>
+                </Border>
 
-                    <GridViewColumn Header="Path"
-                                    Width="600"
-                                    DisplayMemberBinding="{Binding Path}" />
-                </GridView>
-            </ListView.View>
+                <Border Width="46" Height="32"
+                        Background="Transparent"
+                        MouseEnter="Maximize_Hover"
+                        MouseLeave="TitleButton_Leave"
+                        MouseLeftButtonUp="Maximize_Click">
+                    <TextBlock Text="▢"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               FontSize="12"/>
+                </Border>
 
-        </ListView>
+                <Border Width="46" Height="32"
+                        Background="Transparent"
+                        MouseEnter="Close_Hover"
+                        MouseLeave="TitleButton_Leave"
+                        MouseLeftButtonUp="Close_Click">
+                    <TextBlock Text="✕"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               FontSize="12"/>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Border>
 
-    </DockPanel>
+    <!-- 🔍 Поиск — ПЕРЕНЕСЁН СЮДА -->
+    <TextBox DockPanel.Dock="Top"
+             Margin="12"
+             Background="#202020"
+             Foreground="White"
+             BorderBrush="#404040"
+             Padding="8"
+             FontSize="16"
+             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"/>
+
+    <!-- Список -->
+    <ListView Margin="12"
+              ItemsSource="{Binding Results}"
+              MouseDoubleClick="ListView_DoubleClick"
+              Background="#101010"
+              Foreground="White">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn Header="Name" Width="250" DisplayMemberBinding="{Binding Name}"/>
+                <GridViewColumn Header="Path" Width="600" DisplayMemberBinding="{Binding Path}"/>
+            </GridView>
+        </ListView.View>
+    </ListView>
+
+</DockPanel>
+
 
 </Window>
