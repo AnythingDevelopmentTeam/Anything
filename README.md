@@ -1,27 +1,24 @@
-![alt text](https://github.com/RandomSoftMakers/Anything/blob/main/icon.png) 
-# Anything
-Молниеносный локальный поиск по файлам для Windows, Linux и Mac OS.  
+# ![alt text](https://github.com/RandomSoftMakers/Anything/blob/main/icon.png) Anything 
+Молниеносный локальный поиск по файлам для Windows, Linux и macOS.  
 Минималистичный интерфейс, мгновенная выдача, открытый исходный код.
 
 ![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4CAF50)
 ![Tech](https://img.shields.io/badge/.NET-10.0-512BD4)
 
 ---
 
 ## 🚀 Возможности
 
-- ⚡ Быстрый полнотекстовый поиск по файлам  
-- 📁 Индексация файловой системы  
-- 🎨 Тёмная тема  
-- 🔍 Умный поиск по имени  
-- 🧩 Чистый MVVM  
-- 🪟 Нативный интерфейс WPF  
-- 🔧 Лёгкое расширение и модификация  
+- ⚡ Быстрый поиск по имени (без индекса)
+- 🎨 Тёмная тема
+- 🔍 Умная фильтрация результатов
+- 🧩 Чистая архитектура MVVM
+- 🪟 Нативный интерфейс WPF
+- 🔧 Простое расширение и модификация
 
 ---
 
----
 # 📊 Сравнение Anything vs Everything vs fsearch vs ripgrep
 
 | Характеристика | **Anything** | **Everything** | **fsearch** | **ripgrep** |
@@ -31,24 +28,25 @@
 | **Скорость поиска** | Быстрая, зависит от размера диска | ⚡ Мгновенная (индекс) | ⚡ Мгновенная (индекс) | Очень высокая (сканирование) |
 | **Индексация файловой системы** | ❌ Нет | ✔ Да | ✔ Да | ❌ Нет |
 | **Поиск по содержимому файлов** | ❌ Нет | ❌ | ❌ | ✔ Да |
-| **Интерфейс** | WPF (минималистичный) | Win32 | GTK | CLI |
+| **Интерфейс** | WPF | Win32 | GTK | CLI |
 | **Тёмная тема** | ✔ | Частично | ✔ | CLI |
-| **Расширяемость** | Высокая (MVVM + платформенные слои) | Низкая | Средняя | Высокая |
+| **Расширяемость** | Высокая | Низкая | Средняя | Высокая |
 | **Открытый исходный код** | ✔ GPL‑3.0 | ✖ Закрытый | ✔ GPL‑2.0 | ✔ MIT |
-| **Потребление ресурсов** | Среднее (сканирование) | Очень низкое | Низкое | Зависит от проекта |
-| **Поддержка больших дисков (1–10 ТБ)** | ⚠ Зависит от скорости диска | ✔ | ✔ | ✔ |
+| **Потребление ресурсов** | Среднее | Очень низкое | Низкое | Зависит от проекта |
+| **Поддержка больших дисков** | ⚠ Зависит от скорости диска | ✔ | ✔ | ✔ |
 | **Поддержка RegEx** | Планируется | ✔ | ✔ | ✔ |
-| **Поддержка горячих клавиш** | ✔ | ✔ | ✔ | CLI |
-| **Поддержка плагинов** | Планируется | ✖ | ✖ | Через shell |
+| **Горячие клавиши** | ✔ | ✔ | ✔ | CLI |
+| **Плагины** | Планируется | ✖ | ✖ | Через shell |
 | **Установка** | Бинарник / сборка | EXE | Пакеты Linux | CLI |
 | **Целевая аудитория** | Пользователи + разработчики | Массовые пользователи Windows | Linux‑пользователи | Разработчики |
 
 ---
 
-
 ## 📸 Скриншоты
-![alt text](https://github.com/RandomSoftMakers/Anything/blob/main/ScreenShot_Dark)
-![alt text](https://github.com/RandomSoftMakers/Anything/blob/main/Screenshot_Light)
+
+![Тёмная тема](https://github.com/RandomSoftMakers/Anything/blob/main/ScreenShot_Dark)
+![Светлая тема](https://github.com/RandomSoftMakers/Anything/blob/main/Screenshot_Light)
+
 ---
 
 ## 🛠 Технологии
@@ -57,7 +55,6 @@
 - WPF  
 - C# 12  
 - Windows API (Mica / Acrylic)  
-- Собственный индексатор файлов  
 
 ---
 
@@ -71,4 +68,4 @@
 ```bash
 git clone https://github.com/RandomSoftMakers/anything.git
 cd anything
-dotnet build anything.sln
+dotnet build Anything.sln
