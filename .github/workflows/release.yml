@@ -124,11 +124,17 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
 
+      - name: Create archives
+        shell: bash
+        run: |
+          VERSION="${{ needs.prepare.outputs.version }}"
+          mkdir -p archives
+          (cd wpf-build && zip -r "../archives/anything-wpf-${VERSION}.zip" .)
+          (cd gtk-build && tar czf "../archives/anything-gtk-${VERSION}.tar.gz" anything-gui)
+
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.prepare.outputs.version }}
           body_path: changelog/changelog.md
-          files: |
-            wpf-build/**
-            gtk-build/**
+          files: archives/*
