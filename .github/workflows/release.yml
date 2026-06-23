@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -30,11 +31,14 @@ jobs:
           [ -z "$VERSION" ] && VERSION="v$(date +'%Y.%m.%d')"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+          TAG=$(echo "$VERSION" | sed 's/[^a-zA-Z0-9._-]/-/g' | sed 's/--*/-/g' | sed 's/^[.-]//' | sed 's/[.-]$//')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
       - name: Generate changelog
         shell: bash
         run: |
+          TAG="${{ steps.version.outputs.tag }}"
           VERSION="${{ steps.version.outputs.version }}"
-          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
           cat > changelog.md <<EOF
           # Release ${VERSION}
@@ -42,7 +46,7 @@ jobs:
           ## What's Changed
 
           ### Parent Repository
-          $(if [ -n "$PREV_TAG" ]; then git log --oneline --no-decorate "${PREV_TAG}..HEAD" 2>/dev/null; else git log --oneline --no-decorate -20 HEAD 2>/dev/null; fi)
+          $(git log --oneline --no-decorate -20 HEAD 2>/dev/null)
 
           EOF
 
@@ -127,14 +131,15 @@ jobs:
       - name: Create archives
         shell: bash
         run: |
-          VERSION="${{ needs.prepare.outputs.version }}"
+          TAG="${{ needs.prepare.outputs.tag }}"
           mkdir -p archives
-          (cd wpf-build && zip -r "../archives/anything-wpf-${VERSION}.zip" .)
-          (cd gtk-build && tar czf "../archives/anything-gtk-${VERSION}.tar.gz" anything-gui)
+          (cd wpf-build && zip -r "../archives/anything-wpf-${TAG}.zip" .)
+          (cd gtk-build && tar czf "../archives/anything-gtk-${TAG}.tar.gz" anything-gui)
 
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ needs.prepare.outputs.version }}
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          name: ${{ needs.prepare.outputs.version }}
           body_path: changelog/changelog.md
           files: archives/*
