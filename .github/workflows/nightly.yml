@@ -22,7 +22,7 @@ jobs:
       - run: dotnet build -c Release
         working-directory: Anything-UI-WPF
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wpf-build
           path: Anything-UI-WPF/bin/Release/
@@ -44,7 +44,7 @@ jobs:
       - run: cargo build --release
         working-directory: Anything-UI-GTK
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: gtk-build
           path: Anything-UI-GTK/target/release/anything-gui

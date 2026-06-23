@@ -55,7 +55,7 @@ jobs:
             fi
           done
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: changelog
           path: changelog.md
@@ -97,7 +97,7 @@ jobs:
       - run: ${{ matrix.build }}
         working-directory: ${{ matrix.project }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.path }}
