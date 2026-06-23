@@ -1,0 +1,119 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version tag (e.g. v2.1.0)
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - id: version
+        shell: bash
+        run: |
+          VERSION="${{ inputs.version }}"
+          [ -z "$VERSION" ] && VERSION="v$(date +'%Y.%m.%d')"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          cat > changelog.md <<EOF
+          # Release ${VERSION}
+
+          ## What's Changed
+
+          ### Parent Repository
+          $(if [ -n "$PREV_TAG" ]; then git log --oneline --no-decorate "${PREV_TAG}..HEAD" 2>/dev/null; else git log --oneline --no-decorate -20 HEAD 2>/dev/null; fi)
+
+          EOF
+
+          for sub in Anything-UI-WPF Anything-UI-GTK searchengine; do
+            if [ -d "$sub" ]; then
+              echo "" >> changelog.md
+              echo "### $sub" >> changelog.md
+              echo "" >> changelog.md
+              (cd "$sub" && git log --oneline --no-decorate -20 HEAD 2>/dev/null) >> changelog.md
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: changelog
+          path: changelog.md
+
+  build:
+    name: Build ${{ matrix.project }}
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            project: Anything-UI-WPF
+            artifact: wpf-build
+            build: dotnet publish -c Release -r win-x64 --self-contained true
+            path: Anything-UI-WPF/bin/Release/net10.0-windows/win-x64/publish/
+          - os: ubuntu-latest
+            project: Anything-UI-GTK
+            artifact: gtk-build
+            build: cargo build --release
+            path: Anything-UI-GTK/target/release/anything-gui
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-dotnet@v4
+        if: matrix.os == 'windows-latest'
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Install GTK4 dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libadwaita-1-dev
+
+      - run: ${{ matrix.build }}
+        working-directory: ${{ matrix.project }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.path }}
+
+  release:
+    name: Create Release
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.version }}
+          body_path: changelog/changelog.md
+          files: |
+            wpf-build/**
+            gtk-build/**
