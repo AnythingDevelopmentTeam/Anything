@@ -60,63 +60,63 @@ jobs:
           name: changelog
           path: changelog.md
 
-  build:
-    name: Build ${{ matrix.project }}
+  build-wpf:
+    name: Build WPF
     needs: prepare
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            project: Anything-UI-WPF
-            artifact: wpf-build
-            build: dotnet publish -c Release -r win-x64 --self-contained true
-            path: Anything-UI-WPF/bin/Release/net10.0-windows/win-x64/publish/
-          - os: ubuntu-latest
-            project: Anything-UI-GTK
-            artifact: gtk-build
-            build: cargo build --release
-            path: Anything-UI-GTK/target/release/anything-gui
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - uses: actions-rust-lang/setup-rust-toolchain@v1.16.1
-        if: matrix.os == 'windows-latest'
 
       - name: Build searchengine.dll
-        if: matrix.os == 'windows-latest'
         run: cargo build --release
         working-directory: searchengine
 
       - name: Copy searchengine.dll to WPF project
-        if: matrix.os == 'windows-latest'
         run: copy searchengine\target\release\searchengine.dll Anything-UI-WPF\
 
       - uses: actions/setup-dotnet@v5
-        if: matrix.os == 'windows-latest'
         with:
           dotnet-version: 10.0.x
 
-      - uses: dtolnay/rust-toolchain@stable
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: Install GTK4 dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libadwaita-1-dev
-
-      - run: ${{ matrix.build }}
-        working-directory: ${{ matrix.project }}
+      - run: dotnet publish -c Release -r win-x64 --self-contained true
+        working-directory: Anything-UI-WPF
 
       - uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.path }}
+          name: wpf-build
+          path: Anything-UI-WPF/bin/Release/net10.0-windows/win-x64/publish/
+
+  build-gtk:
+    name: Build GTK
+    needs: prepare
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: dnf install -y gtk4-devel libadwaita-devel
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: cargo build --release
+        working-directory: Anything-UI-GTK
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: gtk-build
+          path: Anything-UI-GTK/target/release/anything-gui
 
   release:
     name: Create Release
-    needs: [prepare, build]
+    needs: [prepare, build-wpf, build-gtk]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v8
