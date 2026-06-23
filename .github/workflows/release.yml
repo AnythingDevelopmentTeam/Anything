@@ -97,6 +97,9 @@ jobs:
     container:
       image: fedora:latest
     steps:
+      - name: Install git
+        run: dnf install -y git
+
       - uses: actions/checkout@v7
         with:
           submodules: recursive
