@@ -11,18 +11,18 @@ jobs:
     name: Build WPF
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
       - run: dotnet build -c Release
         working-directory: Anything-UI-WPF
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wpf-build
           path: Anything-UI-WPF/bin/Release/
@@ -32,11 +32,11 @@ jobs:
     name: Build GTK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1.16.1
 
       - name: Install GTK4 dependencies
         run: sudo apt-get update && sudo apt-get install -y libgtk-4-dev libadwaita-1-dev
@@ -44,7 +44,7 @@ jobs:
       - run: cargo build --release
         working-directory: Anything-UI-GTK
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: gtk-build
           path: Anything-UI-GTK/target/release/anything-gui
