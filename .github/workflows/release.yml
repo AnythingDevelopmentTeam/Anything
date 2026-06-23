@@ -82,6 +82,18 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: actions-rust-lang/setup-rust-toolchain@v1.16.1
+        if: matrix.os == 'windows-latest'
+
+      - name: Build searchengine.dll
+        if: matrix.os == 'windows-latest'
+        run: cargo build --release
+        working-directory: searchengine
+
+      - name: Copy searchengine.dll to WPF project
+        if: matrix.os == 'windows-latest'
+        run: copy searchengine\target\release\searchengine.dll Anything-UI-WPF\
+
       - uses: actions/setup-dotnet@v5
         if: matrix.os == 'windows-latest'
         with:
