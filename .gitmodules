@@ -1,9 +1,9 @@
 [submodule "Anything-UI-GTK"]
 	path = Anything-UI-GTK
-	url = git@github.com:AnythingDevelopmentTeam/Anything-UI-GTK.git
+	url = https://github.com/AnythingDevelopmentTeam/Anything-UI-GTK.git
 [submodule "searchengine"]
 	path = searchengine
-	url = git@github.com:AnythingDevelopmentTeam/SearchEngine.git
+	url = https://github.com/AnythingDevelopmentTeam/SearchEngine.git
 [submodule "Anything-UI-WPF"]
 	path = Anything-UI-WPF
-	url = git@github.com:AnythingDevelopmentTeam/Anything-UI-WPF.git
+	url = https://github.com/AnythingDevelopmentTeam/Anything-UI-WPF.git
