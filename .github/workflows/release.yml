@@ -82,7 +82,7 @@ jobs:
       - name: Copy searchengine.dll to WPF project
         run: copy searchengine\target\release\searchengine.dll Anything-UI-WPF\
 
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
 
